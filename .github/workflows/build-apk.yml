@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Setup Java
@@ -27,8 +27,8 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          api-level: 34
-          build-tools: '34.0.0'
+          packages: 'platforms;android-34 build-tools;34.0.0'
+          cmdline-tools-version: '11.0'
 
       - name: Install dependencies
         run: npm ci
@@ -36,11 +36,9 @@ jobs:
       - name: Build Next.js (static export)
         run: npm run build
 
-      - name: Install Capacitor
+      - name: Sync Capacitor Android
         run: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "运营简历精修工坊" "com.resume.polisher" --web-dir=out
-          npx cap add android
+          npx cap sync android
 
       - name: Build APK
         run: |
