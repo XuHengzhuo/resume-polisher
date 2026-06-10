@@ -12,6 +12,7 @@ import { Toolbar } from '@/components/Toolbar';
 import { MobileDrawer } from '@/components/MobileDrawer';
 import { BottomTabBar } from '@/components/BottomTabBar';
 import { MobileBottomSheet } from '@/components/MobileBottomSheet';
+import { ExportModal } from '@/components/ExportModal';
 import { useStore } from '@/store/useStore';
 import {
   MessageSquareText, ArrowLeftRight, Target, AlertTriangle,
@@ -198,6 +199,9 @@ export default function Home() {
         {activePanel === 'detect' && <DetectPanel />}
         {activePanel === 'interview' && <InterviewPanel />}
       </MobileBottomSheet>
+
+      {/* ── 导出弹窗 (桌面+移动端共用) ── */}
+      <ExportModal />
 
       {/* ── 模态框 ── */}
       <QuantifyModal />

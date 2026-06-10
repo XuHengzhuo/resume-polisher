@@ -3,11 +3,10 @@
 import { useState } from 'react';
 import {
   SpellCheck, Wand2, Star, Search, Settings2,
-  ChevronDown, Copy, History, RotateCcw, MessageCircle,
+  ChevronDown, Copy, History, RotateCcw, MessageCircle, FileDown,
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { OpsDirection } from '@/types';
-import { ExportModal } from './ExportModal';
 import { batchSafeReplace, cleanRecursiveDuplication } from '@/lib/dedup';
 import { polishGrammar, polishVerbs, polishQuantify, detectChain } from '@/lib/api-client';
 
@@ -255,7 +254,12 @@ export function Toolbar() {
         </button>
 
         {/* 导出 */}
-        <ExportModal />
+        <button
+          onClick={() => useStore.getState().setExportModalOpen(true)}
+          className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          <FileDown size={14} /> 导出
+        </button>
 
         {/* 历史 */}
         <button

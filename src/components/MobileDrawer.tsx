@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { OpsDirection } from '@/types';
-import { ExportModal } from './ExportModal';
 import { batchSafeReplace, cleanRecursiveDuplication } from '@/lib/dedup';
 import { polishGrammar, polishVerbs, polishQuantify, detectChain } from '@/lib/api-client';
 
@@ -230,7 +229,7 @@ export function MobileDrawer({ onClose }: MobileDrawerProps) {
           <div className="space-y-1 px-2">
             <DrawerButton icon={<RotateCcw size={16} />} label="撤销" onClick={handleUndo} disabled={snapshots.length === 0} />
             <DrawerButton icon={<Copy size={16} />} label="复制全部" onClick={handleCopyAll} />
-            <DrawerButton icon={<FileDown size={16} />} label="导出" onClick={() => { /* handled by ExportModal inner component */ }} />
+            <DrawerButton icon={<FileDown size={16} />} label="导出" onClick={() => { useStore.getState().setExportModalOpen(true); close(); }} />
             <DrawerButton icon={<History size={16} />} label="历史快照" onClick={() => setShowHistoryPanel(!showHistoryPanel)} />
             <DrawerButton
               icon={<Settings2 size={16} />}
@@ -268,10 +267,6 @@ export function MobileDrawer({ onClose }: MobileDrawerProps) {
         </div>
       </div>
 
-      {/* 独立的 ExportModal trigger - 隐藏的按钮供 ExportModal 内部使用 */}
-      <div className="hidden">
-        <ExportModal />
-      </div>
     </div>
   );
 }

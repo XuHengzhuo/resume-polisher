@@ -100,6 +100,10 @@ interface AppState {
   loading: boolean;
   setLoading: (v: boolean) => void;
 
+  // 导出弹窗
+  exportModalOpen: boolean;
+  setExportModalOpen: (v: boolean) => void;
+
   // 导出前提醒
   exportReminderDismissed: boolean;
   setExportReminderDismissed: (v: boolean) => void;
@@ -236,6 +240,9 @@ export const useStore = create<AppState>((set, get) => ({
 
   loading: false,
   setLoading: (v) => set({ loading: v }),
+
+  exportModalOpen: false,
+  setExportModalOpen: (v) => set({ exportModalOpen: v }),
 
   exportReminderDismissed: false,
   setExportReminderDismissed: (v) => set({ exportReminderDismissed: v }),

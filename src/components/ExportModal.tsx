@@ -51,7 +51,8 @@ export function ExportModal() {
   const setPolishedText = useStore(s => s.setPolishedText);
   const setLoading = useStore(s => s.setLoading);
 
-  const [open, setOpen] = useState(false);
+  const open = useStore(s => s.exportModalOpen);
+  const setOpen = useStore(s => s.setExportModalOpen);
   const [format, setFormat] = useState<ExportFormat>('pdf');
   const [copied, setCopied] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
