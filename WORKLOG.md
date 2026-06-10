@@ -60,31 +60,28 @@
 
 #### 8. 代码仓库
 - [x] Git 初始化 + 提交
-- [x] SSH Key 生成并配置到 Gitee
-- [x] 推送至 Gitee：`git@gitee.com:xuhzgitee/resume-polisher.git`
+- [x] ~~Gitee~~ → **迁移至 GitHub**（Gitee 实名认证卡住，放弃该方案）
+- [x] GitHub 仓库：`https://github.com/XuHengzhuo/resume-polisher`
   - `master` 分支：完整源码
   - `gh-pages` 分支：静态网站文件（`out/` 目录）
+- [x] GitHub Pages 部署：`https://xuhengzhuo.github.io/resume-polisher/`
 
-#### 9. Capacitor Android 项目
+#### 9. Capacitor Android 项目 + CI/CD
 - [x] `@capacitor/core`, `@capacitor/cli`, `@capacitor/android` 已安装
 - [x] `capacitor.config.ts` — 包名 `com.resume.polisher`
 - [x] `android/` 项目已生成
 - [x] GitHub Actions 工作流：`.github/workflows/build-apk.yml`（自动构建 APK）
+- [x] 首版 APK 构建成功（`app-debug.apk`, 4.5MB）
 
 ---
 
 ### 待完成
 
-#### 阻塞项
-- [ ] **Gitee 实名认证审核** — 已提交，等待系统审核通过
-- [ ] **启用 Gitee Pages** — 审核通过后，在 `https://gitee.com/xuhzgitee/resume-polisher/pages` 选择 `gh-pages` 分支启动
-- [ ] **生成 APK** — Pages 部署完成后，用 PWABuilder（`https://www.pwabuilder.com`）输入 Gitee Pages URL 生成 APK
-
-#### 后续优化（非阻塞）
 - [ ] 接入真实 LLM API（替换 mock-ai.ts 中的 mock 函数）
 - [ ] 用户可自行配置 API Key
 - [ ] 更多简历模板风格
 - [ ] 历史记录云端同步
+- [ ] 发布 Release 版 APK（需签名密钥）
 
 ---
 
@@ -95,9 +92,10 @@
 | 静态导出（`output: "export"`） | APK 需要离线运行，不能依赖服务端 API |
 | 离线 API 客户端（`api-client.ts`） | 所有 AI 逻辑在前端直接执行，无需网络 |
 | 防重复替换引擎（`dedup.ts`） | 解决多次点击"一键润色"导致的递归嵌套 |
-| Gitee 替代 GitHub | GitHub 在国内访问不稳定，Gitee 是国产替代 |
-| Gitee Pages（国内服务器） | Vercel/Netlify 在国内被墙或速度慢 |
+| ~~Gitee~~ → GitHub | Gitee 实名认证卡住；GitHub + SSH 方案可行 |
+| GitHub Pages（国际 CDN） | 国内访问可能会有延迟，但可用 |
 | Capacitor 打包 | 比 PWABuilder 的 TWA 更可靠，真正离线运行 |
+| GitHub Actions CI | 自动构建 APK，无需本地 Android SDK |
 
 ---
 
@@ -108,26 +106,30 @@ resume-polisher/
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx          # PWA meta + SW 注册
-│   │   ├── page.tsx            # 主页面（左右分屏 + 5 个标签页）
+│   │   ├── page.tsx            # 主页面（响应式：桌面左右分屏 / 移动端全屏+抽屉）
 │   │   ├── globals.css
 │   │   └── api/                # 8 个 API 路由（静态模式下不使用）
 │   ├── components/
 │   │   ├── ResumeEditor.tsx    # 左侧编辑器
-│   │   ├── Toolbar.tsx         # 工具栏（12 个功能按钮）
+│   │   ├── Toolbar.tsx         # 工具栏（桌面端：12 个功能按钮）
+│   │   ├── MobileDrawer.tsx    # 移动端功能抽屉（汉堡菜单）  🆕
+│   │   ├── BottomTabBar.tsx    # 移动端底部导航栏 🆕
+│   │   ├── MobileBottomSheet.tsx# 移动端底部弹出面板 🆕
 │   │   ├── SuggestionPanel.tsx # 润色建议
 │   │   ├── DiffViewer.tsx      # 前后对比
 │   │   ├── KeywordExtractor.tsx# ATS 匹配
 │   │   ├── InterviewPanel.tsx  # 面试模拟
 │   │   ├── QuantifyModal.tsx   # 量化魔法棒弹窗
 │   │   ├── StarExpander.tsx    # STAR 扩展器弹窗
-│   │   ├── ExportModal.tsx     # 导出弹窗（左右分屏+预览+PDF模板）
+│   │   ├── ExportModal.tsx     # 导出弹窗（结构化PDF + 实时预览）
 │   │   └── DensityDashboard.tsx# 数据密度仪表盘
 │   ├── lib/
 │   │   ├── api-client.ts       # 离线 API 客户端 ⭐
 │   │   ├── mock-ai.ts          # Mock AI 响应
 │   │   ├── dedup.ts            # 防重复替换引擎
 │   │   ├── density.ts          # 数据密度计算
-│   │   └── defaults.ts         # 默认测试文本
+│   │   ├── defaults.ts         # 默认测试文本
+│   │   └── resume-parser.ts    # 简历结构化解析引擎 🆕
 │   ├── store/
 │   │   └── useStore.ts         # Zustand 全局状态
 │   └── types/
@@ -144,20 +146,86 @@ resume-polisher/
 │   └── build-apk.yml           # GitHub Actions APK 构建
 ├── capacitor.config.ts
 ├── next.config.ts              # output: "export"
-├── PUBLISH_APK.md              # APK 发布指南
 └── WORKLOG.md                  # 本文件
 ```
 
 ---
 
-### 明天继续
-
-1. 检查 Gitee 实名认证是否通过
-2. 通过后在 Gitee 仓库启用 Pages（选择 `gh-pages` 分支）
-3. 验证 `https://xuhzgitee.gitee.io/resume-polisher` 可访问
-4. 用 PWABuilder 生成 APK
-5. 安装测试
+*日志生成时间：2026-06-09 | 项目：运营简历精修工坊*
 
 ---
 
-*日志生成时间：2026-06-09 | 项目：运营简历精修工坊*
+## 2026-06-10 工作记录
+
+### 今日完成
+
+#### 1. GitHub 迁移
+- [x] Gitee 实名认证卡住 → 放弃 Gitee，全面切回 GitHub
+- [x] 仓库：`https://github.com/XuHengzhuo/resume-polisher`
+- [x] GitHub Pages：`https://xuhengzhuo.github.io/resume-polisher/` ✅
+- [x] SSH Key 配置 + `gh` CLI 认证
+
+#### 2. APK 构建流水线
+- [x] 修复 CI 工作流：Node.js 20→22、Java 17→21、Android SDK 配置
+- [x] 4 轮调试后构建成功，GitHub Actions 自动出 APK
+- [x] 首版 APK `app-debug.apk` (4.5MB) 下载成功
+
+#### 3. 移动端响应式布局
+
+| 组件 | 文件 | 说明 |
+|---|---|---|
+| 功能抽屉 | `MobileDrawer.tsx` | 左侧滑出，汉堡菜单触发，包含全部 12+ 功能按钮 |
+| 底部 Tab | `BottomTabBar.tsx` | 5 个标签：润色/对比/ATS/检测/面试 |
+| 弹出面板 | `MobileBottomSheet.tsx` | 85% 高度底部弹出，带拖拽条 |
+
+| 屏幕 | 布局 |
+|---|---|
+| `< 768px` 手机 | 全屏编辑器 + ☰ 抽屉 + 底部 Tab + 弹出面板 |
+| `>= 768px` 桌面 | 左右分屏 (55:45) + 顶部工具栏（保持原有体验） |
+
+#### 4. PDF 导出结构化重构
+- [x] 新增 `src/lib/resume-parser.ts` 简历解析引擎：
+  - 自动识别姓名、手机号（含带横线格式）、邮箱、城市
+  - 智能板块拆分：求职意向 / 教育背景 / 工作经历 / 项目经验 / 核心技能 / 自我评价
+  - 条目分类：公司行 → `header`、长句描述 → `bullet`、含 `|` 行 → 结构化 header+subtitle
+- [x] `ExportModal.tsx` 重写：
+  - PDF 模板按板块分层次渲染（横幅 → 个人信息 → 板块标题 → 公司/角色/时间 → 要点列表）
+  - 数字指标蓝色高亮、技能彩色标签
+  - 预览即所得（PDF 预览同样使用解析后结构）
+- [x] 修复移动端导出按钮无响应问题（ExportModal 改用 Zustand store 控制）
+
+#### 5. 其他修复
+- [x] Viewport 放开缩放限制（移除 `maximumScale: 1, userScalable: false`）
+- [x] Google Fonts → 系统中文字体栈（避免中国网络构建失败）
+- [x] 新增 `ParsedResume` / `ResumeSection` / `SectionItem` 类型定义
+
+---
+
+### 测试记录
+
+**测试样例**：张三 — 运营专员简历（用户提供）
+
+**解析结果**：
+```
+Header:  张三 | 📱13800001234 | 📧zhangsan@example.com | 📍上海
+Section 1: 求职意向 → 运营专员 / 用户运营 / 内容运营
+Section 2: 教育背景 → 上海大学 · 市场营销 · 本科 | 2019.09 – 2023.06
+Section 3: 工作经历 → 上海云创科技 · 2023.07–至今 (3 bullets)
+                   → 北京智行互动 · 2022.07–2022.12 (3 bullets)
+Section 4: 项目经验 → 校园KOC孵化计划 | 2022.03–2022.08 (2 bullets)
+Section 5: 核心技能 → 3 段技能描述
+Section 6: 自我评价 → 3 段评价
+```
+✅ 全部板块正确识别，公司/角色/时间段正确拆分
+
+---
+
+### 明天继续
+
+1. 真实手机上安装 APK 深度测试
+2. 根据测试反馈进一步微调
+3. 考虑接入真实 LLM API
+
+---
+
+*日志生成时间：2026-06-10 | 项目：运营简历精修工坊*
