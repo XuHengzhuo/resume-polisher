@@ -1,0 +1,39 @@
+{
+  "name": "运营简历精修工坊",
+  "short_name": "简历精修",
+  "description": "AI 驱动的运营岗位简历优化工具 - 语法纠错、动词强化、STAR扩展、ATS匹配",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "lang": "zh-CN",
+  "categories": ["productivity", "business"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "一键润色",
+      "url": "/",
+      "description": "打开简历精修工具"
+    }
+  ]
+}
