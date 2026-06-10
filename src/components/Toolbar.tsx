@@ -156,8 +156,8 @@ export function Toolbar() {
 
   return (
     <div className="border-b border-gray-200 bg-white flex-shrink-0">
-      {/* 主工具栏 */}
-      <div className="flex items-center gap-1 px-3 py-2 overflow-x-auto">
+      {/* 主工具栏 — 仅桌面端可见 */}
+      <div className="hidden md:flex items-center gap-1 px-3 py-2 overflow-x-auto">
         {/* 运营方向选择 */}
         <div className="relative group">
           <select
@@ -276,9 +276,9 @@ export function Toolbar() {
         </button>
       </div>
 
-      {/* 历史快照面板 */}
+      {/* 历史快照面板 — 仅桌面端可见 */}
       {showHistoryPanel && snapshots.length > 0 && (
-        <div className="border-t border-gray-200 bg-gray-50 px-3 py-2">
+        <div className="hidden md:block border-t border-gray-200 bg-gray-50 px-3 py-2">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-gray-600">历史快照 (最近5次)</span>
             <button

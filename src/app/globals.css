@@ -24,3 +24,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── 移动端抽屉/面板过渡动画 ── */
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.duration-250 {
+  transition-duration: 250ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+/* ── 底部安全区域适配 (iPhone notch) ── */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

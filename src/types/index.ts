@@ -103,3 +103,38 @@ export interface DensityStats {
   numberCount: number;
   density: number; // 每100字含数字个数
 }
+
+// ============================================================
+// 简历解析相关类型 (PDF 导出用)
+// ============================================================
+
+/** 简历解析结果 */
+export interface ParsedResume {
+  header: ResumeHeader;
+  sections: ResumeSection[];
+}
+
+/** 个人信息头部 */
+export interface ResumeHeader {
+  name: string;
+  phone?: string;
+  email?: string;
+  location?: string;
+}
+
+/** 简历板块 */
+export interface ResumeSection {
+  title: string;
+  icon: SectionIcon;
+  items: SectionItem[];
+}
+
+export type SectionIcon = 'work' | 'project' | 'edu' | 'skill' | 'summary';
+
+/** 板块内条目 */
+export interface SectionItem {
+  type: 'header' | 'bullet' | 'text';
+  title?: string;    // 公司名/角色/项目名
+  subtitle?: string; // 时间段
+  content: string;   // 具体内容 (已清理 markdown 标记)
+}

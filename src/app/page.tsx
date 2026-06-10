@@ -9,10 +9,13 @@ import { InterviewPanel } from '@/components/InterviewPanel';
 import { QuantifyModal } from '@/components/QuantifyModal';
 import { StarExpander } from '@/components/StarExpander';
 import { Toolbar } from '@/components/Toolbar';
+import { MobileDrawer } from '@/components/MobileDrawer';
+import { BottomTabBar } from '@/components/BottomTabBar';
+import { MobileBottomSheet } from '@/components/MobileBottomSheet';
 import { useStore } from '@/store/useStore';
 import {
   MessageSquareText, ArrowLeftRight, Target, AlertTriangle,
-  Sparkles, Shield, X, MessageCircle,
+  Sparkles, Shield, X, MessageCircle, Menu,
 } from 'lucide-react';
 
 export default function Home() {
@@ -28,6 +31,8 @@ export default function Home() {
   const setExportReminderDismissed = useStore(s => s.setExportReminderDismissed);
   const loading = useStore(s => s.loading);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [showExportReminder, setShowExportReminder] = useState(false);
   const [uniqueAchievement, setUniqueAchievement] = useState('');
 
@@ -48,14 +53,29 @@ export default function Home() {
     { id: 'interview' as const, label: '面试模拟', icon: MessageCircle },
   ];
 
+  const currentTab = tabs.find(t => t.id === activePanel);
+  const bottomSheetTitle = currentTab ? currentTab.label : '面板';
+
+  const handleMobileTabSelect = (tab: 'suggestions' | 'diff' | 'ats' | 'detect' | 'interview') => {
+    setActivePanel(tab);
+    setBottomSheetOpen(true);
+  };
+
   return (
     <div className="h-screen flex flex-col bg-gray-100">
-      {/* 顶部标题栏 */}
-      <header className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 flex-shrink-0">
+      {/* ── 顶部标题栏 ── */}
+      <header className="flex items-center justify-between px-3 py-2 bg-white border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <Sparkles size={20} className="text-blue-500" />
-          <h1 className="text-base font-bold text-gray-800">运营简历精修工坊</h1>
-          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Resume Polisher</span>
+          {/* 移动端汉堡菜单 */}
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="p-1 text-gray-600 hover:bg-gray-100 rounded-lg md:hidden"
+          >
+            <Menu size={20} />
+          </button>
+          <Sparkles size={18} className="text-blue-500 hidden sm:block" />
+          <h1 className="text-sm sm:text-base font-bold text-gray-800">运营简历精修工坊</h1>
+          <span className="hidden sm:inline text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Resume Polisher</span>
         </div>
         <div className="flex items-center gap-2">
           {loading && (
@@ -66,12 +86,14 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 工具栏 */}
-      <Toolbar />
+      {/* ── 工具栏 (仅桌面端) ── */}
+      <div className="hidden md:block">
+        <Toolbar />
+      </div>
 
-      {/* 高级面板 */}
+      {/* ── 高级面板 (仅桌面端) ── */}
       {showAdvanced && (
-        <div className="border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-3 flex-shrink-0">
+        <div className="hidden md:block border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-3 flex-shrink-0">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-1">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -82,7 +104,6 @@ export default function Home() {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-            {/* 同质化警告 */}
             {homogeneity && (
               <div className={`p-3 rounded-xl border ${homogeneity.score > 60 ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}`}>
                 <div className="flex items-center gap-1 font-semibold mb-1">
@@ -97,7 +118,6 @@ export default function Home() {
                 ))}
               </div>
             )}
-            {/* 快速入口 */}
             <div className="p-3 bg-white rounded-xl border border-gray-200">
               <div className="font-semibold text-gray-700 mb-2">💡 差异化建议</div>
               {homogeneity?.suggestions.slice(0, 2).map((s, i) => (
@@ -114,18 +134,18 @@ export default function Home() {
         </div>
       )}
 
-      {/* 主内容区：左右分屏 */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* 左侧：编辑器 */}
-        <div className="w-1/2 border-r border-gray-200 flex flex-col bg-white">
+      {/* ── 主内容区 ── */}
+      <div className="flex-1 flex overflow-hidden pb-0 md:pb-0">
+        {/* 左侧：编辑器 — 移动端全宽，桌面端 55% */}
+        <div className="w-full md:w-[55%] md:border-r md:border-gray-200 flex flex-col bg-white">
           <div className="px-3 py-1.5 border-b border-gray-100 bg-gray-50 flex-shrink-0">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">📝 原始简历编辑区</span>
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">📝 简历编辑区</span>
           </div>
           <ResumeEditor />
         </div>
 
-        {/* 右侧：结果面板 */}
-        <div className="w-1/2 flex flex-col bg-white">
+        {/* 右侧：结果面板 (仅桌面端) */}
+        <div className="hidden md:flex md:w-[45%] flex-col bg-white">
           {/* 标签切换 */}
           <div className="flex items-center border-b border-gray-100 bg-gray-50 flex-shrink-0">
             <div className="flex px-1">
@@ -160,11 +180,30 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 模态框 */}
+      {/* ── 移动端：底部 Tab 栏 ── */}
+      <BottomTabBar onTabSelect={handleMobileTabSelect} />
+
+      {/* ── 移动端：左侧功能抽屉 ── */}
+      {drawerOpen && <MobileDrawer onClose={() => setDrawerOpen(false)} />}
+
+      {/* ── 移动端：底部弹出面板 ── */}
+      <MobileBottomSheet
+        open={bottomSheetOpen}
+        onClose={() => setBottomSheetOpen(false)}
+        title={bottomSheetTitle}
+      >
+        {activePanel === 'suggestions' && <SuggestionPanel />}
+        {activePanel === 'diff' && <DiffViewer />}
+        {activePanel === 'ats' && <KeywordExtractor />}
+        {activePanel === 'detect' && <DetectPanel />}
+        {activePanel === 'interview' && <InterviewPanel />}
+      </MobileBottomSheet>
+
+      {/* ── 模态框 ── */}
       <QuantifyModal />
       <StarExpander />
 
-      {/* 导出前同质化提醒弹窗 */}
+      {/* ── 导出前同质化提醒弹窗 ── */}
       {showExportReminder && !exportReminderDismissed && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
@@ -205,7 +244,7 @@ export default function Home() {
   );
 }
 
-/** 深度检测面板 */
+/** 深度检测面板 (桌面端 + 移动端复用) */
 function DetectPanel() {
   const chainIssues = useStore(s => s.chainIssues);
   const homogeneity = useStore(s => s.homogeneity);
@@ -214,7 +253,6 @@ function DetectPanel() {
 
   return (
     <div className="flex flex-col h-full overflow-y-auto p-4 space-y-4">
-      {/* 链路过短检测 */}
       {chainIssues.length > 0 && (
         <div>
           <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-1">
@@ -244,7 +282,6 @@ function DetectPanel() {
         </div>
       )}
 
-      {/* 同质化检测 */}
       {homogeneity && (
         <div>
           <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-1">
